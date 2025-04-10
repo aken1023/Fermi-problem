@@ -14,12 +14,13 @@
             <header>
                 <h1>費米估算</h1>
                 <div class="header-controls">
-                    <select id="historySelect" class="history-dropdown" title="歷史問題">
+                    <select id="historySelect" class="history-dropdown" title="歷史問題" disabled>
                         <option value="" disabled selected>選擇歷史問題</option>
                     </select>
-                    <button id="infoBtn" class="info-btn gradient-btn" title="了解費米估算對企業的好處">
-                        企業策略推論的平台 說明
+                    <button id="unlockHistoryBtn" class="gradient-btn" title="解鎖歷史問題">
+                        🔑
                     </button>
+    
                 </div>
             </header>
             
@@ -47,7 +48,8 @@
     </div>
 
     <div class="author-info fixed-bottom">
-        作者：<a href="#" title="智合科技">智合科技 Aken</a>
+        作者：<a href="#" title="智合科技">智合科技 E23 阿肯 Aken</a>
+        <span id="ipAddress" class="ip-address">IP: 獲取中...</span>
     </div>
     
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

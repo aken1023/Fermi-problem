@@ -161,16 +161,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = userInput.value.trim();
         if (!message) return;
         
-        addMessage(message, 'user');
-        userInput.value = '';
-        
-        stopBtn.style.display = 'inline-block';
-        sendBtn.style.display = 'none';
-        
-        const tempMessageId = 'temp-message-' + Date.now();
-        addTempMessage(tempMessageId);
-        
         try {
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            stopBtn.style.display = 'inline-block';
+            sendBtn.style.display = 'none';
+            
+            const tempMessageId = 'temp-message-' + Date.now();
+            addTempMessage(tempMessageId);
+            
             currentController = new AbortController();
             const response = await fetch('/chat', {
                 method: 'POST',
@@ -180,6 +180,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({ message: message }),
                 signal: currentController.signal
             });
+            
+            if (response.status === 403) {
+                const data = await response.json();
+                if (data.error.includes('使用次數已達上限')) {
+                    const password = prompt('使用次數已達上限，請輸入密碼重置次數：');
+                    if (password) {
+                        const resetResponse = await fetch('/reset_attempts', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 
+                                ip: document.getElementById('ipAddress').textContent.split(': ')[1],
+                                password: password 
+                            })
+                        });
+                        const resetData = await resetResponse.json();
+                        if (resetData.success) {
+                            document.getElementById('remainingAttempts').textContent = `剩餘次數: ${resetData.remaining}`;
+                            sendMessage(); // 重新發送消息
+                            return;
+                        }
+                    }
+                }
+            }
             
             const data = await response.json();
             removeTempMessage(tempMessageId);
@@ -216,22 +241,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 初始化時加載歷史問題
     loadHistoryQuestions();
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('ipAddress').textContent = `IP: ${data.ip}`;
+        })
+        .catch(error => {
+            console.error('Error fetching IP address:', error);
+        });
+});
 
-    // 添加系統狀態獲取函數
-    async function getSystemStatus() {
-        try {
-            const response = await fetch('/system-status');
-            const data = await response.json();
-            
-            addMessage(`目前在線人數: ${data.onlineUsers}\nIP位置: ${data.clientIP}`, 'ai', true);
-        } catch (error) {
-            addMessage('無法獲取系統狀態信息', 'ai');
-        }
-    }
-
-    // 添加系統狀態按鈕事件監聽器
-    const statusBtn = document.getElementById('statusBtn');
-    if (statusBtn) {
-        statusBtn.addEventListener('click', getSystemStatus);
+document.getElementById('unlockHistoryBtn').addEventListener('click', function() {
+    const password = prompt('請輸入密碼以查看歷史問題：');
+    if (password === '1111') {
+        document.getElementById('historySelect').disabled = false;
+        this.style.display = 'none';
+    } else {
+        alert('密碼錯誤！');
     }
 });

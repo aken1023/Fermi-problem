@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>費米估算資料庫管理</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="database-container">
+        <header>
+            <h1>資料庫管理</h1>
+            <button onclick="window.location.href='/'">返回主頁</button>
+        </header>
+
+        <div class="database-content">
+            <div class="database-controls">
+                <input type="text" id="searchInput" placeholder="搜尋...">
+            </div>
+
+            <div class="records-list" id="recordsList"></div>
+
+            <div class="pagination">
+                <button id="prevPage" class="page-btn">上一頁</button>
+                <span id="pageInfo">第 1 頁</span>
+                <button id="nextPage" class="page-btn">下一頁</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/database.js') }}"></script>
+</body>
+</html>

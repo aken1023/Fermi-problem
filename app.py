@@ -67,6 +67,15 @@ def index():
     history = get_history_questions()
     return render_template('index.html', history=history)
 
+@app.route('/remaining_attempts')
+def remaining_attempts():
+    ip = request.args.get('ip')
+    if ip not in ip_usage:
+        ip_usage[ip] = 10  # 初始化次數
+
+    remaining = ip_usage[ip]
+    return jsonify({'remaining': remaining})
+
 @app.route('/chat', methods=['POST'])
 def chat():
     user_message = request.json.get('message', '')
