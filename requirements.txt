@@ -1,4 +1,4 @@
 flask==3.0.2
 python-dotenv==1.0.1
 requests==2.31.0
-deepseek-ai==0.0.1  # 假设的 DeepSeek 包名，实际使用时请替换为正确的包名
+markdown==3.5.2
