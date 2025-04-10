@@ -5,10 +5,9 @@ cls
 echo 設置 Git 遠端倉庫...
 git remote set-url origin https://github.com/aken1023/Fermi-problem.git
 
-echo 正在執行 Git 操作...
-git add .
-git commit -m "更新：%date% %time%"
-git push origin master
+echo 驗證遠端倉庫設置：
+git remote -v
 
-echo 完成！
+echo.
+echo 完成設置！
 pause
