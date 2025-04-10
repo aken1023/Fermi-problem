@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, jsonify
 import os
 from dotenv import load_dotenv
 import requests
-import sqlite3
+import csv
 import datetime
-import json
+from pathlib import Path
 
 # 加载环境变量
 load_dotenv()
@@ -15,51 +15,65 @@ app = Flask(__name__)
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"  # 假设的 API URL，请替换为实际 URL
 
-# 初始化数据库
-def init_db():
-    conn = sqlite3.connect('fermi_qa.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS qa_records (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        question TEXT NOT NULL,
-        answer TEXT NOT NULL,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-    ''')
-    conn.commit()
-    conn.close()
+# CSV 文件路径
+CSV_FILE = 'qa_records.csv'
 
-# 确保应用启动时初始化数据库
-init_db()
+# 初始化 CSV 文件
+def init_csv():
+    if not Path(CSV_FILE).exists():
+        with open(CSV_FILE, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(['id', 'question', 'answer', 'timestamp'])
 
-# 保存问答记录到数据库
+# 确保应用启动时初始化 CSV
+init_csv()
+
+# 保存问答记录到 CSV
 def save_qa_record(question, answer):
-    conn = sqlite3.connect('fermi_qa.db')
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO qa_records (question, answer, timestamp) VALUES (?, ?, ?)',
-                  (question, answer, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-    conn.commit()
-    conn.close()
+    records = []
+    try:
+        with open(CSV_FILE, 'r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            records = list(reader)
+    except FileNotFoundError:
+        records = [['id', 'question', 'answer', 'timestamp']]
+    
+    new_id = len(records)
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    with open(CSV_FILE, 'a', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow([new_id, question, answer, timestamp])
 
 # 获取历史问题记录
 def get_history_questions():
-    conn = sqlite3.connect('fermi_qa.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT id, question, timestamp FROM qa_records ORDER BY timestamp DESC LIMIT 20')
-    questions = [{'id': row[0], 'question': row[1], 'timestamp': row[2]} for row in cursor.fetchall()]
-    conn.close()
-    return questions
+    questions = []
+    try:
+        with open(CSV_FILE, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                questions.append({
+                    'id': row['id'],
+                    'question': row['question'],
+                    'timestamp': row['timestamp']
+                })
+    except FileNotFoundError:
+        pass
+    return questions[-20:]  # 只返回最近20條記錄
 
 # 获取特定问答记录
 def get_qa_record(record_id):
-    conn = sqlite3.connect('fermi_qa.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT question, answer FROM qa_records WHERE id = ?', (record_id,))
-    record = cursor.fetchone()
-    conn.close()
-    if record:
-        return {'question': record[0], 'answer': record[1]}
+    try:
+        with open(CSV_FILE, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row['id'] == str(record_id):
+                    return {
+                        'question': row['question'],
+                        'answer': row['answer']
+                    }
+    except FileNotFoundError:
+        pass
     return None
 
 @app.route('/')
