@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>費米估算對話</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- 主要聊天界面 -->
+        <div class="chat-container">
+            <header>
+                <h1>費米估算</h1>
+                <div class="header-controls">
+                    <select id="historySelect" class="history-dropdown" title="歷史問題">
+                        <option value="" disabled selected>選擇歷史問題</option>
+                    </select>
+                    <button id="infoBtn" class="info-btn gradient-btn" title="了解費米估算對企業的好處">
+                        企業策略推論的平台 說明
+                    </button>
+                </div>
+            </header>
+            
+            <div class="chat-box" id="chatBox">
+                <div class="message ai-message">
+                    <div class="message-content">
+                        <p>我擅長費米估算，請告訴我你想要推估的議題？</p>
+                        <p>你可以問我類似這樣的問題：</p>
+                        <ul>
+                            <li>台灣一年消耗多少衛生紙？</li>
+                            <li>地球上有多少隻螞蟻？</li>
+                            <li>一年內有多少人在走路時踩到口香糖？</li>
+                            <li>全世界每天產生多少垃圾？</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <textarea id="userInput" placeholder="在這裡輸入你的問題..." rows="3"></textarea>
+                <button id="sendBtn">發送</button>
+                <button id="stopBtn" class="stop-btn">終止</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="author-info fixed-bottom">
+        作者：<a href="#" title="智合科技">智合科技 Aken</a>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
