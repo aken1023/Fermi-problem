@@ -3,54 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>費米估算對話</title>
+    <title>費米估算對話系統</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- 科技感十足的智合科技連結 -->
+    <div class="tech-link-container">
+        <a href="https://www.zh-aoi.com" target="_blank" rel="noopener" class="tech-link">
+            <div class="tech-link-icon"></div>
+            <span class="tech-link-text">智合科技</span>
+            <div class="tech-particles">
+                <div class="tech-particle"></div>
+                <div class="tech-particle"></div>
+                <div class="tech-particle"></div>
+            </div>
+        </a>
+    </div>
+
     <div class="main-container">
         <!-- 主要聊天界面 -->
         <div class="chat-container">
             <header>
-                <h1>費米估算</h1>
+                <div class="header-content">
+                    <div class="logo-container">
+                        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="費米估算系統 LOGO" class="logo">
+                    </div>
+                    <h1>費米估算對話系統</h1>
+                </div>
                 <div class="header-controls">
                     <select id="historySelect" class="history-dropdown" title="歷史問題" disabled>
-                        <option value="" disabled selected>選擇歷史問題</option>
+                        <option value="" disabled selected>查詢歷史問題</option>
                     </select>
-                    <button id="unlockHistoryBtn" class="gradient-btn" title="解鎖歷史問題">
-                        🔑
+                    <button id="unlockHistoryBtn" class="gradient-btn" title="查詢歷史問題">
+                        🔑 管理
                     </button>
-    
                 </div>
             </header>
             
             <div class="chat-box" id="chatBox">
                 <div class="message ai-message">
                     <div class="message-content">
+                        <h3>歡迎使用費米估算對話系統</h3>
                         <p>費米估算是一種用簡單假設快速估出答案的方法，適合在資訊不足時使用。它的優點包括：</p>
                         <ul>
-                            <li>快速：能在短時間內得到一個合理的數量級。</li>
-                            <li>好訓練思考：幫助你把大問題拆成小問題來推理。</li>
-                            <li>不需要完整資料：用常識和邏輯就能估出一個有用的結果。</li>
-                            <li>幫助決策：可用來初步判斷某件事是否值得投入資源。</li>
+                            <li><strong>快速：</strong>能在短時間內得到一個合理的數量級。</li>
+                            <li><strong>訓練思考：</strong>幫助你把大問題拆成小問題來推理。</li>
+                            <li><strong>不需要完整資料：</strong>用常識和邏輯就能估出一個有用的結果。</li>
+                            <li><strong>幫助決策：</strong>可用來初步判斷某件事是否值得投入資源。</li>
                         </ul>
                         <p>簡單說，就是用「合理猜」的方法，讓你在不知道精確答案時，也能做出有根據的估算。</p>
-                        <p>你可以問類似這樣的問題：</p>
+                        
+                        <h4>你可以問類似這樣的問題：</h4>
                         <ul>
                             <li>台灣一年消耗多少衛生紙？</li>
                             <li>地球上有多少隻螞蟻？</li>
                             <li>一年內有多少人在走路時踩到口香糖？</li>
                             <li>全世界每天產生多少垃圾？</li>
-                            <li style="color: #ff6b6b;">⚠️ 不要問：你好？ 🤖</li>
-                            <li style="color: #ff6b6b;">⚠️ 不要問：明天股票是否會漲？ 📈</li>
-                            
                         </ul>
+                        
+                        <div style="background: rgba(231, 76, 60, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid #e74c3c; margin-top: 16px;">
+                            <p style="margin: 0; color: #c0392b;"><strong>⚠️ 注意：</strong>請避免詢問與費米估算無關的問題，例如「你好」或「明天股票是否會漲？」等。</p>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="input-area">
-                <textarea id="userInput" placeholder="在這裡輸入你的問題..." rows="3"></textarea>
+                <textarea id="userInput" placeholder="在這裡輸入你的費米估算問題..." rows="3"></textarea>
                 <button id="sendBtn">發送</button>
                 <button id="stopBtn" class="stop-btn">終止</button>
             </div>
@@ -58,7 +81,7 @@
     </div>
 
     <div class="author-info">
-        <span class="author-text">作者：<a href="#" title="智合科技">智合科技 Aken</a></span>
+        <span class="author-text">開發者：<a href="https://aken.zhgpt.org/" target="_blank" rel="noopener">Aken</a></span>
         <span id="ipAddress" class="ip-address">IP: 獲取中...</span>
     </div>
     

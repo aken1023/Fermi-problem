@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWD 響應式設計測試</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Noto Sans TC', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .rwd-test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .rwd-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+        
+        .rwd-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .rwd-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .rwd-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .rwd-card p {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .rwd-features {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .rwd-features h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e3f2fd;
+            color: #424242;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✓";
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .breakpoint-info {
+            background: #fff3e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .breakpoint-info h3 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+        
+        .breakpoint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .breakpoint-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .breakpoint-item h4 {
+            color: #e65100;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .breakpoint-item p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .test-buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .test-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 10px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .current-size {
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .rwd-test-container {
+                padding: 20px;
+            }
+            
+            .rwd-title {
+                font-size: 1.5rem;
+            }
+            
+            .rwd-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .rwd-test-container {
+                padding: 15px;
+            }
+            
+            .rwd-title {
+                font-size: 1.3rem;
+            }
+            
+            .breakpoint-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 科技感十足的智合科技連結 -->
+    <div class="tech-link-container">
+        <a href="https://www.zh-aoi.com" target="_blank" rel="noopener" class="tech-link">
+            <div class="tech-link-icon"></div>
+            <span class="tech-link-text">智合科技</span>
+            <div class="tech-particles">
+                <div class="tech-particle"></div>
+                <div class="tech-particle"></div>
+                <div class="tech-particle"></div>
+            </div>
+        </a>
+    </div>
+
+    <div class="rwd-test-container">
+        <h1 class="rwd-title">RWD 響應式設計測試</h1>
+        
+        <div class="current-size" id="currentSize">
+            當前螢幕尺寸：<span id="screenSize"></span>
+        </div>
+        
+        <div class="rwd-features">
+            <h3>🎯 RWD 響應式設計特色</h3>
+            <ul class="feature-list">
+                <li>支援所有主流裝置解析度</li>
+                <li>流暢的佈局適配</li>
+                <li>觸控友好的介面設計</li>
+                <li>高解析度螢幕優化</li>
+                <li>深色模式支援</li>
+                <li>無障礙設計</li>
+                <li>列印樣式優化</li>
+                <li>減少動畫偏好支援</li>
+            </ul>
+        </div>
+        
+        <div class="breakpoint-info">
+            <h3>📱 解析度斷點設計</h3>
+            <div class="breakpoint-grid">
+                <div class="breakpoint-item">
+                    <h4>大螢幕桌面版</h4>
+                    <p>1200px 以上<br>最佳使用體驗</p>
+                </div>
+                <div class="breakpoint-item">
+                    <h4>標準桌面版</h4>
+                    <p>992px - 1199px<br>完整功能支援</p>
+                </div>
+                <div class="breakpoint-item">
+                    <h4>小桌面版</h4>
+                    <p>768px - 991px<br>適中佈局</p>
+                </div>
+                <div class="breakpoint-item">
+                    <h4>平板版</h4>
+                    <p>768px 以下<br>觸控優化</p>
+                </div>
+                <div class="breakpoint-item">
+                    <h4>大手機版</h4>
+                    <p>480px - 767px<br>手機適配</p>
+                </div>
+                <div class="breakpoint-item">
+                    <h4>小手機版</h4>
+                    <p>320px - 479px<br>緊湊佈局</p>
+                </div>
+                <div class="breakpoint-item">
+                    <h4>超小手機版</h4>
+                    <p>320px 以下<br>最小化設計</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rwd-grid">
+            <div class="rwd-card">
+                <h3>📐 佈局適配</h3>
+                <p>根據螢幕尺寸自動調整容器寬度、間距和字體大小，確保在所有裝置上都有最佳的可讀性和可用性。</p>
+            </div>
+            <div class="rwd-card">
+                <h3>🎨 視覺優化</h3>
+                <p>針對不同解析度優化視覺元素，包括按鈕大小、圖標尺寸、動畫效果等，提供一致的視覺體驗。</p>
+            </div>
+            <div class="rwd-card">
+                <h3>👆 觸控友好</h3>
+                <p>在觸控裝置上增加按鈕和連結的最小觸控目標大小（44px），確保易於點擊和操作。</p>
+            </div>
+            <div class="rwd-card">
+                <h3>🔄 橫向模式</h3>
+                <p>特別優化橫向模式下的佈局，調整元素位置和大小，充分利用橫向螢幕空間。</p>
+            </div>
+            <div class="rwd-card">
+                <h3>⚡ 效能優化</h3>
+                <p>在高解析度螢幕上優化邊框和陰影，在觸控裝置上減少不必要的動畫效果。</p>
+            </div>
+            <div class="rwd-card">
+                <h3>♿ 無障礙設計</h3>
+                <p>支援鍵盤導航、螢幕閱讀器，並尊重使用者的動畫偏好設定。</p>
+            </div>
+        </div>
+        
+        <div class="test-buttons">
+            <a href="http://localhost:5000" class="test-btn">前往主應用程式</a>
+            <a href="test_loading.html" class="test-btn">測試載入動畫</a>
+            <a href="tech_link_demo.html" class="test-btn">測試科技連結</a>
+        </div>
+    </div>
+
+    <script>
+        // 更新當前螢幕尺寸顯示
+        function updateScreenSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const screenSizeElement = document.getElementById('screenSize');
+            
+            let sizeCategory = '';
+            if (width >= 1200) {
+                sizeCategory = '大螢幕桌面版';
+            } else if (width >= 992) {
+                sizeCategory = '標準桌面版';
+            } else if (width >= 768) {
+                sizeCategory = '小桌面版';
+            } else if (width >= 480) {
+                sizeCategory = '大手機版';
+            } else if (width >= 320) {
+                sizeCategory = '小手機版';
+            } else {
+                sizeCategory = '超小手機版';
+            }
+            
+            screenSizeElement.textContent = `${width} × ${height} (${sizeCategory})`;
+        }
+        
+        // 頁面載入時更新
+        updateScreenSize();
+        
+        // 視窗大小改變時更新
+        window.addEventListener('resize', updateScreenSize);
+        
+        // 添加一些互動效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.rwd-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

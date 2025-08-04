@@ -1,0 +1,9 @@
+# DeepSeek API 設定
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+
+# 應用程式設定
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+# 其他設定
+PORT=5000 

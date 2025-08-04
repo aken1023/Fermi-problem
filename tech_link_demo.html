@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智合科技 - 科技感連結演示</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Noto Sans TC', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .demo-container {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .demo-title {
+            color: #00ffff;
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            letter-spacing: 3px;
+        }
+        
+        .demo-subtitle {
+            color: #ffffff;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0.8;
+        }
+        
+        .tech-link-demo {
+            position: relative;
+            margin: 20px;
+        }
+        
+        .demo-info {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ffff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-info h3 {
+            color: #00ffff;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .demo-info p {
+            color: #ffffff;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .feature-list li {
+            color: #ffffff;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #00ffff;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .back-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* 背景粒子效果 */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .bg-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: bgFloat 6s linear infinite;
+        }
+        
+        @keyframes bgFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .demo-title {
+                font-size: 2rem;
+            }
+            
+            .demo-subtitle {
+                font-size: 1rem;
+            }
+            
+            .demo-info {
+                margin: 30px 15px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景粒子 -->
+    <div class="bg-particles" id="bgParticles"></div>
+    
+    <!-- 返回按鈕 -->
+    <a href="http://localhost:5000" class="back-button">← 返回主頁</a>
+    
+    <div class="demo-container">
+        <h1 class="demo-title">智合科技</h1>
+        <p class="demo-subtitle">科技感十足的連結設計演示</p>
+        
+        <!-- 科技感連結演示 -->
+        <div class="tech-link-demo">
+            <div class="tech-link-container">
+                <a href="https://www.zh-aoi.com" target="_blank" rel="noopener" class="tech-link">
+                    <div class="tech-link-icon"></div>
+                    <span class="tech-link-text">智合科技</span>
+                    <div class="tech-particles">
+                        <div class="tech-particle"></div>
+                        <div class="tech-particle"></div>
+                        <div class="tech-particle"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="demo-info">
+            <h3>🎨 科技感設計特色</h3>
+            <ul class="feature-list">
+                <li>⚡ 霓虹發光效果 - 青色邊框和陰影</li>
+                <li>🔄 3D 旋轉動畫 - 滑鼠懸停時的立體效果</li>
+                <li>✨ 粒子動畫 - 浮動的科技粒子</li>
+                <li>💫 掃光效果 - 滑鼠懸停時的掃光動畫</li>
+                <li>📱 完全響應式 - 適配所有裝置</li>
+                <li>🎯 互動反饋 - 豐富的懸停和點擊效果</li>
+            </ul>
+            
+            <p><strong>點擊上方連結前往智合科技官網</strong></p>
+            <p>體驗未來科技感的視覺設計</p>
+        </div>
+    </div>
+
+    <script>
+        // 創建背景粒子
+        function createBackgroundParticles() {
+            const particlesContainer = document.getElementById('bgParticles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'bg-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 頁面載入時創建粒子
+        document.addEventListener('DOMContentLoaded', function() {
+            createBackgroundParticles();
+        });
+        
+        // 定期重新創建粒子以保持效果
+        setInterval(createBackgroundParticles, 10000);
+    </script>
+</body>
+</html> 

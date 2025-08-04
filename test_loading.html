@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>載入動畫測試</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .test-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .demo-area {
+            margin-top: 30px;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <!-- 科技感十足的智合科技連結 -->
+    <div class="tech-link-container">
+        <a href="https://www.zh-aoi.com" target="_blank" rel="noopener" class="tech-link">
+            <div class="tech-link-icon"></div>
+            <span class="tech-link-text">智合科技</span>
+            <div class="tech-particles">
+                <div class="tech-particle"></div>
+                <div class="tech-particle"></div>
+                <div class="tech-particle"></div>
+            </div>
+        </a>
+    </div>
+
+    <div class="test-container">
+        <h1 class="test-title">費米估算載入動畫測試</h1>
+        
+        <div style="text-align: center;">
+            <button class="test-button" onclick="showLoading()">顯示載入動畫</button>
+            <button class="test-button" onclick="hideLoading()">隱藏載入動畫</button>
+            <button class="test-button" onclick="testFullFlow()">測試完整流程</button>
+        </div>
+        
+        <div class="demo-area">
+            <h3>動畫展示區域：</h3>
+            <div id="demoChatBox" style="height: 300px; overflow-y: auto; background: white; border-radius: 8px; padding: 15px;">
+                <div class="message ai-message">
+                    <div class="message-content">
+                        <p>點擊上方按鈕來測試載入動畫效果！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="http://localhost:5000" class="test-button" style="text-decoration: none; display: inline-block;">
+                前往主應用程式
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let loadingInterval = null;
+        let currentLoadingId = null;
+        
+        const loadingMessages = [
+            "正在分析問題...",
+            "分解複雜問題中...",
+            "進行費米估算...",
+            "計算數值中...",
+            "檢查合理性...",
+            "整理答案中..."
+        ];
+        
+        function addLoadingMessage() {
+            const demoChatBox = document.getElementById('demoChatBox');
+            const loadingId = 'loading-' + Date.now();
+            currentLoadingId = loadingId;
+            
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai-message';
+            loadingDiv.id = loadingId;
+            
+            loadingDiv.innerHTML = `
+                <div class="loading-message">
+                    <div class="loading-avatar"></div>
+                    <div class="loading-content">
+                        <div class="loading-text typing-indicator">正在思考中...</div>
+                        <div class="loading-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="loading-progress">
+                            <div class="loading-progress-bar"></div>
+                        </div>
+                        <div class="thinking-animation">
+                            <div class="thinking-dot"></div>
+                            <div class="thinking-dot"></div>
+                            <div class="thinking-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            demoChatBox.appendChild(loadingDiv);
+            demoChatBox.scrollTop = demoChatBox.scrollHeight;
+            
+            // 開始動態更新載入文字
+            let messageIndex = 0;
+            const loadingTextElement = loadingDiv.querySelector('.loading-text');
+            
+            loadingInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                loadingTextElement.textContent = loadingMessages[messageIndex];
+            }, 2000);
+        }
+        
+        function hideLoading() {
+            if (currentLoadingId) {
+                const loadingElement = document.getElementById(currentLoadingId);
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+                currentLoadingId = null;
+            }
+            
+            if (loadingInterval) {
+                clearInterval(loadingInterval);
+                loadingInterval = null;
+            }
+        }
+        
+        function showLoading() {
+            hideLoading(); // 先清除之前的載入動畫
+            addLoadingMessage();
+        }
+        
+        function testFullFlow() {
+            // 模擬完整的對話流程
+            const demoChatBox = document.getElementById('demoChatBox');
+            
+            // 清空聊天框
+            demoChatBox.innerHTML = '';
+            
+            // 添加使用者訊息
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.innerHTML = `
+                <div class="message-content">
+                    <p>台灣一年消耗多少衛生紙？</p>
+                </div>
+            `;
+            demoChatBox.appendChild(userMessage);
+            
+            // 顯示載入動畫
+            setTimeout(() => {
+                addLoadingMessage();
+                
+                // 模擬 AI 回應
+                setTimeout(() => {
+                    hideLoading();
+                    
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'message ai-message';
+                    aiMessage.innerHTML = `
+                        <div class="message-content markdown-content">
+                            <h3>費米估算：台灣一年衛生紙消耗量</h3>
+                            <p>讓我來分析這個問題：</p>
+                            <ol>
+                                <li><strong>分解問題：</strong>台灣人口 × 每人每天使用量 × 365天</li>
+                                <li><strong>假設：</strong>台灣人口約2300萬人</li>
+                                <li><strong>估算：</strong>每人每天約使用3張衛生紙</li>
+                                <li><strong>計算：</strong>23,000,000 × 3 × 365 = 25,185,000,000張</li>
+                            </ol>
+                            <p><strong>結論：</strong>台灣一年約消耗250億張衛生紙</p>
+                        </div>
+                    `;
+                    demoChatBox.appendChild(aiMessage);
+                    demoChatBox.scrollTop = demoChatBox.scrollHeight;
+                }, 5000);
+            }, 1000);
+        }
+    </script>
+</body>
+</html> 
