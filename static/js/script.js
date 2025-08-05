@@ -213,6 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = userInput.value.trim();
         if (!message) return;
         
+        // 將 tempMessageId 提升到 try/catch/finally 區塊外部
+        let tempMessageId = null;
         try {
             // 添加使用者訊息
             addMessage(message, 'user');
@@ -223,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
             sendBtn.style.display = 'none';
             
             // 添加載入動畫
-            const tempMessageId = 'loading-message-' + Date.now();
+            tempMessageId = 'loading-message-' + Date.now();
             addLoadingMessage(tempMessageId);
             
             // 創建請求控制器
