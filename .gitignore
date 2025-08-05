@@ -1,12 +1,14 @@
+# 環境變數檔案
+.env
+.env.local
+.env.production
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
-venv/
-ENV/
 build/
 develop-eggs/
 dist/
@@ -18,22 +20,43 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-.env
-.venv
-ECHO �w�����C
+MANIFEST
+
+# 虛擬環境
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
 # IDE
-.idea/
 .vscode/
+.idea/
 *.swp
 *.swo
-ECHO �w�����C
-# OS
+*~
+
+# 作業系統
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
-.env
-.env
-.env
-.env
+
+# 日誌檔案
+*.log
+logs/
+
+# 資料庫檔案
+*.db
+*.sqlite
+*.sqlite3
+
+# CSV 檔案（包含對話記錄）
+qa_records.csv

@@ -5,6 +5,11 @@ import requests
 import csv
 import datetime
 from pathlib import Path
+import logging
+
+# 設定日誌記錄
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # 加载环境变量
 load_dotenv()
@@ -13,8 +18,19 @@ app = Flask(__name__)
 
 # 获取 DeepSeek API 密钥
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-# 假设的 API URL，请替换为实际 URL
+# DeepSeek API URL
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
+
+# 检查 API 密钥是否存在
+if not DEEPSEEK_API_KEY:
+    logger.error("DEEPSEEK_API_KEY 環境變數未設定！")
+    logger.error("請在 Zeabur 平台設定環境變數 DEEPSEEK_API_KEY")
+    logger.error("或在本地建立 .env 檔案並設定")
+else:
+    # 檢查 API 金鑰格式
+    if not DEEPSEEK_API_KEY.startswith('sk-'):
+        logger.warning("API 金鑰格式可能不正確，應該以 'sk-' 開頭")
+    logger.info("API 金鑰已載入")
 
 # CSV 文件路径
 CSV_FILE = 'qa_records.csv'
@@ -109,6 +125,14 @@ def chat():
     if not user_message:
         return jsonify({"error": "消息不能为空"}), 400
     
+    # 檢查 API 金鑰是否存在
+    if not DEEPSEEK_API_KEY:
+        logger.error("API 金鑰未設定")
+        return jsonify({
+            "error": "API 金鑰未設定",
+            "details": "請在 Zeabur 平台設定環境變數 DEEPSEEK_API_KEY"
+        }), 500
+    
     # 调用 DeepSeek API
     try:
         headers = {
@@ -144,7 +168,39 @@ def chat():
             "max_tokens": 3000
         }
         
+        logger.info(f"發送 API 請求到 {DEEPSEEK_API_URL}")
         response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload)
+        
+        # 詳細的錯誤處理
+        if response.status_code == 401:
+            logger.error("API 金鑰無效 (401      Unauthorized)")
+            return jsonify({
+                "error": "API 金鑰無效或未正確設定",
+                "details": "請檢查 DEEPSEEK_API_KEY 環境變數是否正確設定在 Zeabur 平台",
+                "status_code": 401
+            }), 401
+        elif response.status_code == 403:
+            logger.error("API 金鑰權限不足 (403 Forbidden)")
+            return jsonify({
+                "error": "API 金鑰權限不足",
+                "details": "請檢查您的 DeepSeek 帳戶權限和 API 金鑰設定",
+                "status_code": 403
+            }), 403
+        elif response.status_code == 429:
+            logger.error("API 請求次數已達上限 (429 Too Many Requests)")
+            return jsonify({
+                "error": "API 請求次數已達上限",
+                "details": "請稍後再試或檢查您的 API 使用配額",
+                "status_code": 429
+            }), 429
+        elif response.status_code != 200:
+            logger.error(f"API 請求失敗，狀態碼: {response.status_code}")
+            return jsonify({
+                "error": f"API 請求失敗 (HTTP {response.status_code})",
+                "details": response.text,
+                "status_code": response.status_code
+            }), response.status_code
+        
         response.raise_for_status()
         
         ai_response = response.json()
@@ -155,8 +211,25 @@ def chat():
         
         return jsonify({"response": ai_message})
     
+    except requests.exceptions.HTTPError as e:
+        logger.error(f"HTTP 錯誤: {e}")
+        status_code = e.response.status_code if hasattr(e, 'response') else 500
+        return jsonify({
+            "error": f"API 請求失敗: {str(e)}",
+            "status_code": status_code
+        }), status_code
+    except requests.exceptions.RequestException as e:
+        logger.error(f"網路連線錯誤: {e}")
+        return jsonify({
+            "error": f"網路連線錯誤: {str(e)}",
+            "details": "請檢查網路連線或稍後再試"
+        }), 500
     except Exception as e:
-        return jsonify({"error": f"API 调用失败: {str(e)}"}), 500
+        logger.error(f"系統錯誤: {e}")
+        return jsonify({
+            "error": f"系統錯誤: {str(e)}",
+            "details": "請聯繫系統管理員"
+        }), 500
 
 
 @app.route('/history', methods=['GET'])

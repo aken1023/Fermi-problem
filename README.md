@@ -79,16 +79,15 @@ pip install -r requirements.txt
 
 ### 3. 設定環境變數
 複製 `env_example.txt` 為 `.env` 並填入您的設定：
+
+**⚠️ 重要安全提醒：絕對不要在程式碼中直接寫入 API 金鑰！**
+
 ```bash
-# DeepSeek API 設定
-DEEPSEEK_API_KEY=your_deepseek_api_key_here
+# 複製範例檔案
+cp env_example.txt .env
 
-# 應用程式設定
-FLASK_ENV=development
-FLASK_DEBUG=True
-
-# 其他設定
-PORT=5000
+# 編輯 .env 檔案，填入您的實際 API 金鑰
+DEEPSEEK_API_KEY=sk-your_actual_api_key_here
 ```
 
 ### 4. 執行應用程式
