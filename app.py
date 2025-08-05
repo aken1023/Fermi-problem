@@ -175,7 +175,7 @@ def chat():
         }
         
         logger.info(f"發送 API 請求到 {DEEPSEEK_API_URL}")
-        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload)
+        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=60)
         
         # 詳細的錯誤處理
         if response.status_code == 401:
