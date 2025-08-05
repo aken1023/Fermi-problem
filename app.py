@@ -108,6 +108,12 @@ def index():
     return render_template('index.html', history=history)
 
 
+@app.route('/api_test')
+def api_test():
+    """API 金鑰檢測頁面"""
+    return render_template('api_test.html')
+
+
 @app.route('/remaining_attempts')
 def remaining_attempts():
     ip = request.args.get('ip')
@@ -173,7 +179,7 @@ def chat():
         
         # 詳細的錯誤處理
         if response.status_code == 401:
-            logger.error("API 金鑰無效 (401      Unauthorized)")
+            logger.error("API 金鑰無效 (401 Unauthorized)")
             return jsonify({
                 "error": "API 金鑰無效或未正確設定",
                 "details": "請檢查 DEEPSEEK_API_KEY 環境變數是否正確設定在 Zeabur 平台",
@@ -195,9 +201,10 @@ def chat():
             }), 429
         elif response.status_code != 200:
             logger.error(f"API 請求失敗，狀態碼: {response.status_code}")
+            logger.error(f"回應內容: {response.text[:500]}")
             return jsonify({
                 "error": f"API 請求失敗 (HTTP {response.status_code})",
-                "details": response.text,
+                "details": response.text[:500],
                 "status_code": response.status_code
             }), response.status_code
         
@@ -278,6 +285,136 @@ def reset_attempts():
         return jsonify({
             "success": False,
             "error": "重置失敗"
+        }), 500
+
+
+@app.route('/check_api_key', methods=['GET'])
+def check_api_key():
+    """檢查 DEEPSEEK_API_KEY 的狀態和有效性"""
+    try:
+        # 檢查環境變數是否存在
+        if not DEEPSEEK_API_KEY:
+            return jsonify({
+                "status": "error",
+                "message": "API 金鑰未設定",
+                "details": "請在 Zeabur 平台設定環境變數 DEEPSEEK_API_KEY",
+                "recommendation": "在 Zeabur 控制台中新增環境變數 DEEPSEEK_API_KEY"
+            }), 500
+        
+        # 檢查 API 金鑰格式
+        if not DEEPSEEK_API_KEY.startswith('sk-'):
+            return jsonify({
+                "status": "warning",
+                "message": "API 金鑰格式可能不正確",
+                "details": f"API 金鑰應該以 'sk-' 開頭，目前格式: {DEEPSEEK_API_KEY[:10]}...",
+                "recommendation": "請檢查 API 金鑰是否正確複製"
+            }), 400
+        
+        # 測試 API 連線
+        headers = {
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        test_payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {"role": "user", "content": "測試"}
+            ],
+            "max_tokens": 10
+        }
+        
+        logger.info("開始測試 DeepSeek API 連線")
+        response = requests.post(
+            DEEPSEEK_API_URL,
+            headers=headers,
+            json=test_payload,
+            timeout=10
+        )
+        
+        # 分析回應
+        if response.status_code == 200:
+            return jsonify({
+                "status": "success",
+                "message": "API 金鑰有效且連線正常",
+                "details": {
+                    "api_key_format": "正確",
+                    "api_key_length": len(DEEPSEEK_API_KEY),
+                    "api_key_prefix": DEEPSEEK_API_KEY[:10] + "...",
+                    "connection_test": "成功",
+                    "response_time": f"{response.elapsed.total_seconds():.2f}秒"
+                },
+                "recommendation": "API 金鑰設定正確，可以正常使用"
+            })
+        
+        elif response.status_code == 401:
+            return jsonify({
+                "status": "error",
+                "message": "API 金鑰無效",
+                "details": {
+                    "status_code": 401,
+                    "error_type": "Unauthorized",
+                    "api_key_format": "正確" if DEEPSEEK_API_KEY.startswith('sk-') else "不正確"
+                },
+                "recommendation": "請檢查 API 金鑰是否正確，或重新生成新的 API 金鑰"
+            }), 401
+        
+        elif response.status_code == 403:
+            return jsonify({
+                "status": "error",
+                "message": "API 金鑰權限不足",
+                "details": {
+                    "status_code": 403,
+                    "error_type": "Forbidden"
+                },
+                "recommendation": "請檢查您的 DeepSeek 帳戶權限和 API 金鑰設定"
+            }), 403
+        
+        elif response.status_code == 429:
+            return jsonify({
+                "status": "warning",
+                "message": "API 請求次數已達上限",
+                "details": {
+                    "status_code": 429,
+                    "error_type": "Too Many Requests"
+                },
+                "recommendation": "請稍後再試或檢查您的 API 使用配額"
+            }), 429
+        
+        else:
+            return jsonify({
+                "status": "error",
+                "message": f"API 測試失敗 (HTTP {response.status_code})",
+                "details": {
+                    "status_code": response.status_code,
+                    "response_text": response.text[:200]
+                },
+                "recommendation": "請檢查網路連線或稍後重試"
+            }), response.status_code
+            
+    except requests.exceptions.Timeout:
+        return jsonify({
+            "status": "error",
+            "message": "API 連線超時",
+            "details": "請求在 10 秒內未收到回應",
+            "recommendation": "請檢查網路連線或稍後重試"
+        }), 408
+    
+    except requests.exceptions.ConnectionError:
+        return jsonify({
+            "status": "error",
+            "message": "無法連接到 DeepSeek API",
+            "details": "網路連線錯誤",
+            "recommendation": "請檢查網路連線或防火牆設定"
+        }), 503
+    
+    except Exception as e:
+        logger.error(f"API 金鑰檢查時發生錯誤: {e}")
+        return jsonify({
+            "status": "error",
+            "message": "檢查過程中發生未知錯誤",
+            "details": str(e),
+            "recommendation": "請聯繫系統管理員"
         }), 500
 
 

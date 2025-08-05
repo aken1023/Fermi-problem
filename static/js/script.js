@@ -268,6 +268,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
+            // 檢查回應內容類型
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error(`預期 JSON 回應，但收到: ${contentType || '未知類型'}`);
+            }
+            
             const data = await response.json();
             
             // 移除載入動畫
@@ -276,6 +282,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // 添加 AI 回應
             if (data.error) {
                 addMessage(`錯誤: ${data.error}`, 'ai');
+                if (data.details) {
+                    addMessage(`詳細資訊: ${data.details}`, 'ai');
+                }
             } else {
                 addMessage(data.response, 'ai', true);
             }
