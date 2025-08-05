@@ -73,6 +73,9 @@
             </div>
             
             <div class="input-area">
+                <div class="attempts-info">
+                    <span id="remainingAttempts">剩餘次數: 10</span>
+                </div>
                 <textarea id="userInput" placeholder="在這裡輸入你的費米估算問題..." rows="3"></textarea>
                 <button id="sendBtn">發送</button>
                 <button id="stopBtn" class="stop-btn">終止</button>
@@ -85,6 +88,6 @@
         <span id="ipAddress" class="ip-address">IP: 獲取中...</span>
     </div>
     
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js', v='1.0.1') }}"></script>
 </body>
 </html>

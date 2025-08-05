@@ -1,3 +1,4 @@
+// Version: 1.0.1 - Fixed tempMessageId scope issue
 document.addEventListener('DOMContentLoaded', function() {
     const chatBox = document.getElementById('chatBox');
     const userInput = document.getElementById('userInput');
@@ -281,7 +282,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             // 移除載入動畫
-            removeLoadingMessage(tempMessageId);
+            if (tempMessageId) {
+                removeLoadingMessage(tempMessageId);
+            }
             
             if (error.name === 'AbortError') {
                 addMessage('已終止請求。', 'ai');

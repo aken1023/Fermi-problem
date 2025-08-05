@@ -246,6 +246,41 @@ def get_qa(record_id):
     return jsonify({"error": "記錄不存在"}), 404
 
 
+@app.route('/reset_attempts', methods=['POST'])
+def reset_attempts():
+    try:
+        data = request.json
+        ip = data.get('ip')
+        password = data.get('password')
+        
+        # 簡單的密碼驗證（建議使用更安全的方式）
+        if password == 'admin123':  # 請更改為您的管理密碼
+            if ip in ip_usage:
+                ip_usage[ip] = 10  # 重置為 10 次
+                return jsonify({
+                    "success": True,
+                    "remaining": ip_usage[ip],
+                    "message": "使用次數已重置"
+                })
+            else:
+                return jsonify({
+                    "success": False,
+                    "error": "IP 地址未找到"
+                }), 404
+        else:
+            return jsonify({
+                "success": False,
+                "error": "密碼錯誤"
+            }), 401
+            
+    except Exception as e:
+        logger.error(f"重置使用次數時發生錯誤: {e}")
+        return jsonify({
+            "success": False,
+            "error": "重置失敗"
+        }), 500
+
+
 if __name__ == '__main__':
     # 修改為監聽所有網絡介面，並指定端口
     app.run(host='0.0.0.0', port=5000, debug=True)

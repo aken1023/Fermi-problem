@@ -1755,3 +1755,27 @@ html {
         opacity: 0;
     }
 }
+
+/* 使用次數顯示樣式 */
+.attempts-info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 5px 0;
+    margin-bottom: 10px;
+}
+
+#remainingAttempts {
+    font-size: 14px;
+    color: var(--light-text);
+    background: rgba(52, 152, 219, 0.1);
+    padding: 5px 10px;
+    border-radius: 15px;
+    border: 1px solid rgba(52, 152, 219, 0.2);
+    transition: var(--transition);
+}
+
+#remainingAttempts:hover {
+    background: rgba(52, 152, 219, 0.15);
+    border-color: rgba(52, 152, 219, 0.3);
+}
